@@ -11,6 +11,92 @@
 
 </head>
 <body>
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-success bg-gradient">
+    <a class="navbar-brand" href="index.html">~The Library~</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse pl-5">
+        <ul class="navbar-nav mr-auto h5">
+            <li class="nav-item pr-5">
+                <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item dropdown pr-5">
+                <a class="nav-link dropdown-toggle" href="#" id="booksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Books
+                </a>
+                <div class="dropdown-menu mt-2" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="books.html">All Books</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="show-book.html">Book Info</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="insert-book.html">Add Book</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="update-book.html">Update Book</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="delete-book.html">Delete Book</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" id="authorsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Authors
+                </a>
+                <div class="dropdown-menu mt-2" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="authors.html">All Authors</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="show-author.html">Author Info</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="insert-author.html">Add Author</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="update-author.html">Update Author</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br>
+<br>
+<h1 class="text-center mt-4 pb-2">Our Authors</h1>
+<div class="jumbotron" id="allBooks">
 
+</div>
+<script>
+    function CreateTable(data){
+        let table = "";
+        table =
+            '<table class="table table-bordered table-hover"> \n' +
+            '   <thead>\n' +
+            '       <tr>\n' +
+            '           <th scope="col">Name</th> \n'+
+            '           <th scope="col">Nationality</th> \n'+
+            '       </tr>\n' +
+            '   </thead>\n' +
+            '   <tbody>\n';
+        for (let author in data){
+            table +=
+                '       <tr>\n' +
+                '           <td>' + data[author]["name"]+  '</td>\n' +
+                '           <td>' + data[author]["nationality"]+  '</td>\n'+
+                '       </tr>\n';
+        }
+
+        table +=
+            '   </tbody>\n' +
+            '</table>\n'
+        return table;
+    }
+    window.addEventListener("load", (event) =>{
+        let url = "https://thawing-sea-51557.herokuapp.com/api/authors";
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function (){
+            if (this.readyState == 4 && this.status == 200){
+                document.getElementById("allBooks").innerHTML =
+                    CreateTable(JSON.parse(this.responseText));
+            }
+        };
+        xhttp.open('GET', url, true);
+        xhttp.send();
+    });
+</script>
 </body>
 </html>
