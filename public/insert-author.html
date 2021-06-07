@@ -75,7 +75,6 @@
     </div>
     <br>
     <p id="addedAuthor">This is the id of the book you added!: </p>
-    <p id="test"></p>
 </div>
 <script>
     document.getElementById("btnAddAuthor").addEventListener("click", (event) => {
@@ -91,7 +90,7 @@
         };
         let authorData = "name=" + document.getElementById("name").value + "&nationality=" + document.getElementById("nationality").value + "&";
         xhttp.send(authorData);
-    })
+    });
 </script>
 </body>
 </html>

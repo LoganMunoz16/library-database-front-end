@@ -54,5 +54,83 @@
         </ul>
     </div>
 </nav>
+<br>
+<br>
+<h1 class="text-center mt-4 pb-2">Update an Author</h1>
+<p class="text-center">ID's can be found on the master author list!</p>
+<div id="test">
+
+</div>
+<br>
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label for="authorID">Enter Author ID:</label>
+            <input id="authorID" name="authorID" type="text" class="form-control" placeholder="ID">
+        </div>
+    </form>
+    <button class="btn btn-lg btn-success" id="btnSearchAuthor">Find My Author!</button>
+</div>
+<div id="updateForm" style="visibility: hidden">
+    <h3 class="text-center mt-4 pb-2">Previous Info</h3>
+    <div class="container">
+        <form>
+            <div class="mb-3 form-group">
+                <label for="name">Name:</label>
+                <input type="text" name="name" id="name" class="form-control"
+                       placeholder="Name">
+            </div>
+            <div class="mb-3 form-group">
+                <label for="nationality">Nationality:</label>
+                <input type="text" name="nationality" id="nationality" class="form-control"
+                       placeholder="Nationality">
+            </div>
+        </form>
+        <div class="container">
+            <button class="btn btn-lg btn-success" id="btnUpdateAuthor">Update Author</button>
+        </div>
+        <br>
+        <div id="updatedMessage"></div>
+    </div>
+</div>
+<script>
+    function InsertValues(data) {
+        document.getElementById("name").value = data["name"];
+        document.getElementById("nationality").value = data["nationality"];
+    }
+    document.getElementById("btnUpdateAuthor").addEventListener("click", (event) => {
+        let url = "https://thawing-sea-51557.herokuapp.com/api/authors/" + document.getElementById("authorID").value;
+        let xhttp = new XMLHttpRequest();
+        xhttp.open('PATCH', url, true);
+        xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhttp.onreadystatechange = function (){
+            if (this.readyState == 4 && this.status == 200){
+                document.getElementById("updatedMessage").innerHTML +=
+                    "Your author has been updated!";
+            }
+        };
+        let authorData = "name=" + document.getElementById("name").value + "&nationality=" + document.getElementById("nationality").value;
+        document.getElementById("test").innerHTML += url;
+        xhttp.send(authorData);
+    });
+    document.getElementById("btnSearchAuthor").addEventListener("click", (event) =>{
+        let authorID = document.getElementById("authorID").value;
+        let url = "https://thawing-sea-51557.herokuapp.com/api/authors/" + authorID;
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function (){
+            if (this.readyState == 4 && this.status == 200){
+                document.getElementById("updateForm").style.visibility = "visible";
+                InsertValues(JSON.parse(this.responseText));
+                document.getElementById("btnUpdateAuthor").innerHTML = "AAAhhAAAA";
+            }
+            else {
+
+            }
+        };
+        xhttp.open('GET', url, true);
+        xhttp.send();
+    });
+
+</script>
 </body>
 </html>

@@ -58,7 +58,6 @@
 <br>
 <h1 class="text-center mt-4 pb-2">Update a Book</h1>
 <p class="text-center">ID's can be found on the master book list!</p>
-<p id="test"></p>
 <br>
 <div class="container">
     <form>
@@ -131,7 +130,7 @@
         document.getElementById("description").value = data["description"];
         document.getElementById("year").value = data["year"];
         document.getElementById("price").value = data["price"];
-        if(!data["hardCover"]){
+        if(data["hardCover"]){
             document.getElementById("hardCoverY").checked = true;
             document.getElementById("hardCoverN").checked = false;
         }
