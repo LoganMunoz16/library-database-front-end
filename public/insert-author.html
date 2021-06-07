@@ -54,5 +54,44 @@
         </ul>
     </div>
 </nav>
+<br>
+<br>
+<h1 class="text-center mt-4 pb-2">Add an Author</h1>
+<div class="container">
+    <form>
+        <div class="mb-3 form-group">
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" class="form-control"
+                   placeholder="Name">
+        </div>
+        <div class="mb-3 form-group">
+            <label for="nationality">Nationality:</label>
+            <input type="text" name="nationality" id="nationality" class="form-control"
+                   placeholder="Nationality">
+        </div>
+    </form>
+    <div class="container">
+        <button class="btn btn-lg btn-success" id="btnAddAuthor">Add Author</button>
+    </div>
+    <br>
+    <p id="addedAuthor">This is the id of the book you added!: </p>
+    <p id="test"></p>
+</div>
+<script>
+    document.getElementById("btnAddAuthor").addEventListener("click", (event) => {
+        let url = "https://thawing-sea-51557.herokuapp.com/api/authors/";
+        let xhttp = new XMLHttpRequest();
+        xhttp.open('POST', url, true);
+        xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhttp.onreadystatechange = function (){
+            if (this.readyState == 4 && this.status == 200){
+                document.getElementById("addedAuthor").innerHTML +=
+                    JSON.parse(this.responseText)["id"];
+            }
+        };
+        let authorData = "name=" + document.getElementById("name").value + "&nationality=" + document.getElementById("nationality").value + "&";
+        xhttp.send(authorData);
+    })
+</script>
 </body>
 </html>

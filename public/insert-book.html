@@ -8,7 +8,13 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <style>
 
+        li {
+            display:inline-block;
+            width: 12em;
+        }
+    </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-success bg-gradient">
@@ -54,5 +60,104 @@
         </ul>
     </div>
 </nav>
+<br>
+<br>
+<h1 class="text-center mt-4 pb-2">Add a Book</h1>
+<div class="container">
+        <form>
+            <div class="mb-3 form-group">
+                <label for="title">Title:</label>
+                <input type="text" name="title" id="title" class="form-control"
+                       placeholder="Title">
+            </div>
+            <div class="mb-3 form-group">
+                <label for="description">Description:</label>
+                <input type="text" name="description" id="description" class="form-control"
+                       placeholder="Description">
+            </div>
+            <div class="mb-3 form-group">
+                <label for="year">Year Published:</label>
+                <input type="number" step="1" name="year" id="year" class="form-control" min="0" max="2021"
+                       placeholder="Year">
+            </div>
+            <p>Author(s):</p>
+            <div class="mb-3 form-check">
+                <ul id="authors"  style="list-style-type: none">
+                </ul>
+            </div>
+            <div class="mb-3 form-group">
+                <p>Hard Cover Available?</p>
+                <div class="ml-4">
+                    <input type="radio" class="form-check-input" id="hardCoverY" name="hardCover">
+                    <label for="hardCoverY" class="form-check-label pr-5"> - Yes</label>
+                    <input type="radio" class="form-check-input" id="hardCoverN" name="hardCover" checked>
+                    <label for="hardCoverN" class="form-check-label"> - No</label>
+                </div>
+            </div>
+            <div class="mb-3 form-group">
+                <label for="price">Price: $</label>
+                <input type="number" step="0.01" name="price" id="price" class="form-control" min="0"
+                       placeholder="Price">
+            </div>
+        </form>
+    <div class="container">
+        <button class="btn btn-lg btn-success" id="btnAddBook">Add Book</button>
+    </div>
+    <br>
+    <p id="addedBook">This is the id of the book you added: </p>
+</div>
+<script>
+    function CreateAuthorList(data){
+        let list = "";
+        let i = 0;
+        for (let author in data){
+                list +=
+                    '<li style="display: inline-block; width: 22%"><input type="checkbox" name="author" id="' + i + '" value="' + data[author]["_id"] + '"><label for="' + i + '"> - ' + data[author]["name"] + '</label></li>\n';
+                i++;
+        }
+        return list;
+    }
+    window.addEventListener("load", (event) =>{
+        let url = "https://thawing-sea-51557.herokuapp.com/api/authors";
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function (){
+            if (this.readyState == 4 && this.status == 200){
+                document.getElementById("authors").innerHTML =
+                    CreateAuthorList(JSON.parse(this.responseText));
+            }
+        };
+        xhttp.open('GET', url, true);
+        xhttp.send();
+    });
+
+    document.getElementById("btnAddBook").addEventListener("click", (event) => {
+        let url = "https://thawing-sea-51557.herokuapp.com/api/books/";
+        let xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function (){
+            if (this.readyState == 4 && this.status == 200){
+                document.getElementById("addedBook").innerHTML +=
+                    JSON.parse(this.responseText)["id"];
+            }
+        };
+        let bookData = "title=" + document.getElementById("title").value + "&description=" + document.getElementById("description").value +
+            "&year=" + document.getElementById("year").value;
+        let allAuthors = document.getElementsByName("author");
+        let length = allAuthors.length;
+        for(let i = 0; i < length; i++) {
+            if(allAuthors[i].checked){
+                bookData += "&author=" + allAuthors[i].value;
+            }
+        }
+        let hCover = false;
+        if(document.getElementById("hardCoverY").checked) {
+            hCover = true;
+        }
+        bookData += "&hardCover=" + hCover + "&price=" + document.getElementById("price").value + "&";
+        xhttp.open('POST', url, true);
+        xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhttp.send(bookData);
+    })
+</script>
 </body>
 </html>

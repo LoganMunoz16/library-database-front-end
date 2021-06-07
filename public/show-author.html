@@ -54,6 +54,64 @@
         </ul>
     </div>
 </nav>
+<br>
+<br>
+<h1 class="text-center mt-4 pb-2">View an Author</h1>
+<p class="text-center">ID's can be found on the master author list!</p>
+<br>
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label for="authorID">Enter Author ID:</label>
+            <input id="authorID" name="bookID" type="text" class="form-control" placeholder="ID">
+        </div>
+    </form>
+    <button class="btn btn-lg btn-success" id="btnSearchAuthor">Find My Author!</button>
+</div>
+<div class="jumbotron" id="foundAuthor">
 
+</div>
+<script>
+    function CreateTable(data){
+        let table = "";
+        table =
+            '<table class="table table-bordered table-hover"> \n' +
+            '   <thead>\n' +
+            '       <tr>\n' +
+            '           <th scope="col">Name</th> \n'+
+            '           <th scope="col">Nationality</th> \n'+
+            '           <th scope="col">ID</th> \n'+
+            '       </tr>\n' +
+            '   </thead>\n' +
+            '   <tbody>\n';
+            table +=
+                '       <tr>\n' +
+                '           <td>' + data["name"]+  '</td>\n' +
+                '           <td>' + data["nationality"] +  '</td>\n'+
+                '           <td>' + data["_id"] +  '</td>\n'+
+                '       </tr>\n';
+
+        table +=
+            '   </tbody>\n' +
+            '</table>\n'
+        return table;
+    }
+    document.getElementById("btnSearchAuthor").addEventListener("click", (event) =>{
+        let authorID = document.getElementById("authorID").value;
+        let url = "https://thawing-sea-51557.herokuapp.com/api/authors/" + authorID;
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function (){
+            if (this.readyState == 4 && this.status == 200){
+                document.getElementById("foundAuthor").innerHTML =
+                    CreateTable(JSON.parse(this.responseText));
+            }
+            else {
+
+            }
+        };
+        xhttp.open('GET', url, true);
+        xhttp.send();
+    });
+</script>
 </body>
 </html>

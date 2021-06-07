@@ -68,6 +68,7 @@
             '   <thead>\n' +
             '       <tr>\n' +
             '           <th scope="col">Title</th> \n'+
+            '           <th scope="col">Description</th> \n'+
             '           <th scope="col">Author(s)</th> \n'+
             '           <th scope="col">Year</th> \n'+
             '           <th scope="col">Hardcover</th> \n'+
@@ -85,6 +86,7 @@
             table +=
                 '       <tr>\n' +
                 '           <td>' + data[book]["title"]+  '</td>\n' +
+                '           <td style="width:30%">' + data[book]["description"]+  '</td>\n' +
                 '           <td id="authors' + j +'"></td>\n' +
                 '           <td>' + data[book]["year"]+  '</td>\n';
             if(data[book]["hardCover"]) {
@@ -94,7 +96,7 @@
                 table += '           <td>No</td>\n';
             }
             table +=
-                '           <td>$' + data[book]["price"]+  '</td>\n' +
+                '           <td>$' + data[book]["price"].toFixed(2)+  '</td>\n' +
                 '           <td>' + data[book]["_id"]+  '</td>\n' +
                 '       </tr>\n';
             j++;
@@ -111,7 +113,7 @@
             let xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function (){
                 if (this.readyState == 4 && this.status == 200){
-                    document.getElementById(fullId).innerHTML += JSON.parse(this.responseText)["name"] + "<br>";
+                    document.getElementById(fullId).innerHTML += JSON.parse(this.responseText)["name"] + "<hr>";
                 }
             };
             xhttp.open('GET', url, true);

@@ -54,5 +54,151 @@
         </ul>
     </div>
 </nav>
+<br>
+<br>
+<h1 class="text-center mt-4 pb-2">Update a Book</h1>
+<p class="text-center">ID's can be found on the master book list!</p>
+<p id="test"></p>
+<br>
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label for="bookID">Enter Book ID:</label>
+            <input id="bookID" name="bookID" type="text" class="form-control" placeholder="ID">
+        </div>
+    </form>
+    <button class="btn btn-lg btn-success" id="btnSearchBook">Find My Book!</button>
+</div>
+<div id="updateForm" style="visibility: hidden">
+    <h3 class="text-center mt-4 pb-2">Previous Info</h3>
+    <div class="container">
+        <form>
+            <div class="mb-3 form-group">
+                <label for="title">Title:</label>
+                <input type="text" name="title" id="title" class="form-control"
+                       placeholder="Title">
+            </div>
+            <div class="mb-3 form-group">
+                <label for="description">Description:</label>
+                <input type="text" name="description" id="description" class="form-control"
+                       placeholder="Description">
+            </div>
+            <div class="mb-3 form-group">
+                <label for="year">Year Published:</label>
+                <input type="number" step="1" name="year" id="year" class="form-control" min="0" max="2021"
+                       placeholder="Year">
+            </div>
+            <p>Author(s):</p>
+            <div class="mb-3 form-check">
+                <ul id="authors"  style="list-style-type: none">
+                </ul>
+            </div>
+            <div class="mb-3 form-group">
+                <p>Hard Cover Available?</p>
+                <div class="ml-4">
+                    <input type="radio" class="form-check-input" id="hardCoverY" name="hardCover">
+                    <label for="hardCoverY" class="form-check-label pr-5"> - Yes</label>
+                    <input type="radio" class="form-check-input" id="hardCoverN" name="hardCover">
+                    <label for="hardCoverN" class="form-check-label"> - No</label>
+                </div>
+            </div>
+            <div class="mb-3 form-group">
+                <label for="price">Price: $</label>
+                <input type="number" step="0.01" name="price" id="price" class="form-control" min="0"
+                       placeholder="Price">
+            </div>
+        </form>
+        <div class="container">
+            <button class="btn btn-lg btn-success" id="btnUpdateBook">Update Book</button>
+        </div>
+        <br>
+        <p id="updatedMessage"></p>
+    </div>
+</div>
+<script>
+    function CreateAuthorList(data){
+        let list = "";
+        let i = 0;
+        for (let author in data){
+            list +=
+                '<li style="display: inline-block; width: 22%"><input type="checkbox" name="author" id="' + i + '" value="' + data[author]["_id"] + '"><label for="' + i + '"> - ' + data[author]["name"] + '</label></li>\n';
+            i++;
+        }
+        return list;
+    }
+    function InsertValues(data) {
+        document.getElementById("title").value = data["title"];
+        document.getElementById("description").value = data["description"];
+        document.getElementById("year").value = data["year"];
+        document.getElementById("price").value = data["price"];
+        if(!data["hardCover"]){
+            document.getElementById("hardCoverY").checked = true;
+            document.getElementById("hardCoverN").checked = false;
+        }
+        else {
+            document.getElementById("hardCoverY").checked = false;
+            document.getElementById("hardCoverN").checked = true;
+        }
+        for(let i = 0; i < data["author"].length; i++){
+            let queryString = "input[value=\'" + data["author"][i] + "\']";
+            document.querySelector(queryString).checked = true;
+        }
+
+    }
+    window.addEventListener("load", (event) =>{
+        let url = "https://thawing-sea-51557.herokuapp.com/api/authors";
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function (){
+            if (this.readyState == 4 && this.status == 200){
+                document.getElementById("authors").innerHTML =
+                    CreateAuthorList(JSON.parse(this.responseText));
+            }
+        };
+        xhttp.open('GET', url, true);
+        xhttp.send();
+    });
+    document.getElementById("btnSearchBook").addEventListener("click", (event) =>{
+        let bookID = document.getElementById("bookID").value;
+        let url = "https://thawing-sea-51557.herokuapp.com/api/books/" + bookID;
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function (){
+            if (this.readyState == 4 && this.status == 200){
+                document.getElementById("updateForm").style.visibility = "visible";
+                InsertValues(JSON.parse(this.responseText));
+            }
+        };
+        xhttp.open('GET', url, true);
+        xhttp.send();
+    });
+
+    document.getElementById("btnUpdateBook").addEventListener("click", (event) => {
+        let url = "https://thawing-sea-51557.herokuapp.com/api/books/";
+        let xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function (){
+            if (this.readyState == 4 && this.status == 200){
+                document.getElementById("updatedMessage").innerHTML +=
+                    "Your book has been updated!";
+            }
+        };
+        let bookData = "title=" + document.getElementById("title").value + "&description=" + document.getElementById("description").value +
+            "&year=" + document.getElementById("year").value;
+        let allAuthors = document.getElementsByName("author");
+        let length = allAuthors.length;
+        for(let i = 0; i < length; i++) {
+            if(allAuthors[i].checked){
+                bookData += "&author=" + allAuthors[i].value;
+            }
+        }
+        let hCover = false;
+        if(document.getElementById("hardCoverY").checked) {
+            hCover = true;
+        }
+        bookData += "&hardCover=" + hCover + "&price=" + document.getElementById("price").value + "&";
+        xhttp.open('PATCH', url, true);
+        xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhttp.send(bookData);
+    })
+</script>
 </body>
 </html>
