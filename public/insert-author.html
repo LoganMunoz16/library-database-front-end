@@ -10,18 +10,18 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
 </head>
-<body>
+<body style="background-color: #dbc3a3; font-weight: 500">
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-success bg-gradient">
     <a class="navbar-brand" href="index.html">~The Library~</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse pl-5">
+    <div class="collapse navbar-collapse pl-4">
         <ul class="navbar-nav mr-auto h5">
-            <li class="nav-item pr-5">
+            <li class="nav-item pr-4">
                 <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item dropdown pr-5">
+            <li class="nav-item dropdown pr-4">
                 <a class="nav-link dropdown-toggle" href="#" id="booksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Books
                 </a>
@@ -60,7 +60,7 @@
 <div class="container">
     <form>
         <div class="mb-3 form-group">
-            <label for="name">Name (Required):</label>
+            <label for="name" style="font-weight: bold">Name (Required):</label>
             <input type="text" name="name" id="name" class="form-control"
                    placeholder="Name" style="border: 2px solid red">
         </div>
@@ -75,7 +75,6 @@
         <span id="issueMessage" style="color: red" class="ml-2"></span>
     </div>
     <br>
-    <p id="addedAuthor">This is the id of the book you added!: </p>
 </div>
 <script>
     document.getElementById("name").addEventListener("input", (event) => {
@@ -98,8 +97,9 @@
         xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhttp.onreadystatechange = function (){
             if (this.readyState == 4 && this.status == 200){
-                document.getElementById("addedAuthor").innerHTML +=
+                document.getElementById("issueMessage").innerHTML += "Here is your author's ID: " +
                     JSON.parse(this.responseText)["id"];
+                document.getElementById("issueMessage").style.color = "green";
             }
         };
         let authorData = "name=" + document.getElementById("name").value + "&nationality=" + document.getElementById("nationality").value + "&";

@@ -10,18 +10,18 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
 </head>
-<body>
+<body style="background-color: #dbc3a3; font-weight: 500">
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-success bg-gradient">
     <a class="navbar-brand" href="index.html">~The Library~</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse pl-5">
+    <div class="collapse navbar-collapse pl-4">
         <ul class="navbar-nav mr-auto h5">
-            <li class="nav-item pr-5">
+            <li class="nav-item pr-4">
                 <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item dropdown pr-5">
+            <li class="nav-item dropdown pr-4">
                 <a class="nav-link dropdown-toggle" href="#" id="booksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Books
                 </a>
@@ -70,6 +70,7 @@
         </div>
     </form>
     <button class="btn btn-lg btn-success" id="btnSearchAuthor">Find My Author!</button>
+    <span id="authorFindError" style="color: red" class="ml-2"></span>
 </div>
 <div id="updateForm" style="visibility: hidden">
     <h3 class="text-center mt-4 pb-2">Previous Info</h3>
@@ -78,27 +79,41 @@
             <div class="mb-3 form-group">
                 <label for="name">Name:</label>
                 <input type="text" name="name" id="name" class="form-control"
-                       placeholder="Name">
+                       placeholder="Name" style="border: 2px solid green">
             </div>
             <div class="mb-3 form-group">
                 <label for="nationality">Nationality:</label>
                 <input type="text" name="nationality" id="nationality" class="form-control"
-                       placeholder="Nationality">
+                       placeholder="Nationality" style="border: 2px solid green">
             </div>
         </form>
         <div class="container">
             <button class="btn btn-lg btn-success" id="btnUpdateAuthor">Update Author</button>
+            <span id="issueMessage" style="color: red" class="ml-2"></span>
         </div>
         <br>
         <div id="updatedMessage"></div>
     </div>
 </div>
 <script>
+    document.getElementById("name").addEventListener("input", (event) => {
+        if(document.getElementById("name").value.length > 0) {
+            document.getElementById("name").style.borderColor = "green";
+        }
+        else {
+            document.getElementById("name").style.borderColor = "red";
+        }
+    });
     function InsertValues(data) {
         document.getElementById("name").value = data["name"];
         document.getElementById("nationality").value = data["nationality"];
     }
     document.getElementById("btnUpdateAuthor").addEventListener("click", (event) => {
+        if(document.getElementById("name").value.length === 0) {
+            document.getElementById("issueMessage").innerHTML = "Please fill all required forms.";
+            return;
+        }
+        document.getElementById("issueMessage").innerHTML = "";
         let url = "https://thawing-sea-51557.herokuapp.com/api/authors/" + document.getElementById("authorID").value;
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
@@ -121,9 +136,10 @@
             if (this.readyState == 4 && this.status == 200){
                 document.getElementById("updateForm").style.visibility = "visible";
                 InsertValues(JSON.parse(this.responseText));
+                document.getElementById("authorFindError").innerHTML = "";
             }
-            else {
-
+            else if(this.readyState == 4 && (this.status == 404 || this.status == 500)) {
+                document.getElementById("authorFindError").innerHTML = "Whoops! It looks like we don't have an author for that ID!";
             }
         };
         xhttp.open('GET', url, true);

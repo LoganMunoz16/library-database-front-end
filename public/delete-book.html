@@ -10,18 +10,18 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
 </head>
-<body>
+<body style="background-color: #dbc3a3; font-weight: 500">
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-success bg-gradient">
     <a class="navbar-brand" href="index.html">~The Library~</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse pl-5">
+    <div class="collapse navbar-collapse pl-4">
         <ul class="navbar-nav mr-auto h5">
-            <li class="nav-item pr-5">
+            <li class="nav-item pr-4">
                 <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item dropdown pr-5">
+            <li class="nav-item dropdown pr-4">
                 <a class="nav-link active dropdown-toggle" href="#" id="booksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Books
                 </a>
@@ -58,7 +58,6 @@
 <br>
 <h1 class="text-center mt-4 pb-2">Delete a Book</h1>
 <p class="text-center">ID's can be found on the master book list!</p>
-<p id="test1"></p>
 <br>
 <div class="container">
     <form>
@@ -69,8 +68,10 @@
     </form>
     <button class="btn btn-lg btn-success" id="btnSearchBook">Find My Book!</button>
     <button class="btn btn-lg btn-danger" id="btnDeleteBook">DELETE</button>
+    <span id="issueMessage" style="color: red" class="ml-2"></span>
 </div>
-<div class="jumbotron" id="foundBook">
+<br>
+<div style="width:95%; margin-left: auto; margin-right: auto" id="foundBook">
 
 </div>
 <p id="test"></p>
@@ -78,9 +79,9 @@
     function CreateTable(data){
         let table = "";
         table =
-            '<table class="table table-bordered table-hover"> \n' +
+            '<table class="table table-bordered table-hover table-striped table-dark"> \n' +
             '   <thead>\n' +
-            '       <tr>\n' +
+            '       <tr class="table-active">\n' +
             '           <th scope="col">Title</th> \n'+
             '           <th scope="col">Description</th> \n'+
             '           <th scope="col">Author(s)</th> \n'+
@@ -139,6 +140,10 @@
             if (this.readyState == 4 && this.status == 200){
                 document.getElementById("foundBook").innerHTML =
                     CreateTable(JSON.parse(this.responseText));
+                document.getElementById("issueMessage").innerHTML = "";
+            }
+            else if(this.readyState == 4 && (this.status == 404 || this.status == 500)) {
+                document.getElementById("issueMessage").innerHTML = "Whoops! It looks like we don't have a book for that ID!";
             }
         };
         xhttp.open('GET', url, true);
@@ -148,16 +153,19 @@
        let bookID = document.getElementById("bookID").value;
        let url = "https://thawing-sea-51557.herokuapp.com/api/books/" + bookID;
        let xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function(){
+       xhttp.open('DELETE', url, true);
+       xhttp.onreadystatechange = function(){
             document.getElementById("test").innerHTML += this.status;
             if(this.readyState == 4 && this.status == 200){
-                document.getElementById("test1").innerHTML = "this happened";
+                document.getElementById("test").innerHTML = "this happened";
+                document.getElementById("issueMessage").innerHTML = "";
+            }
+            else if(this.readyState == 4 && (this.status == 404 || this.status == 500)) {
+                document.getElementById("issueMessage").innerHTML = "Whoops! It looks like we don't have a book for that ID!";
             }
         };
-        xhttp.open('DELETE', url, true);
-        xhttp.send();
+       xhttp.send();
     });
-
 </script>
 </body>
 </html>

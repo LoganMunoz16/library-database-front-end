@@ -10,18 +10,18 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
 </head>
-<body>
+<body style="background-color: #dbc3a3; font-weight: 500">
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-success bg-gradient">
     <a class="navbar-brand" href="index.html">~The Library~</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse pl-5">
+    <div class="collapse navbar-collapse pl-4">
         <ul class="navbar-nav mr-auto h5">
-            <li class="nav-item pr-5">
+            <li class="nav-item pr-4">
                 <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item dropdown pr-5">
+            <li class="nav-item dropdown pr-4">
                 <a class="nav-link active dropdown-toggle" href="#" id="booksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Books
                 </a>
@@ -67,6 +67,7 @@
         </div>
     </form>
     <button class="btn btn-lg btn-success" id="btnSearchBook">Find My Book!</button>
+    <span id="errorSearchBook" style="color: red"></span>
 </div>
 <div id="updateForm" style="visibility: hidden">
     <h3 class="text-center mt-4 pb-2">Previous Info</h3>
@@ -75,17 +76,17 @@
             <div class="mb-3 form-group">
                 <label for="title">Title:</label>
                 <input type="text" name="title" id="title" class="form-control"
-                       placeholder="Title">
+                       placeholder="Title" style="border: 2px solid green">
             </div>
             <div class="mb-3 form-group">
                 <label for="description">Description:</label>
                 <input type="text" name="description" id="description" class="form-control"
-                       placeholder="Description">
+                       placeholder="Description" style="border: 2px solid green">
             </div>
             <div class="mb-3 form-group">
                 <label for="year">Year Published:</label>
                 <input type="number" step="1" name="year" id="year" class="form-control" min="0" max="2021"
-                       placeholder="Year">
+                       placeholder="Year" style="border: 2px solid green">
             </div>
             <p>Author(s):</p>
             <div class="mb-3 form-check">
@@ -104,17 +105,49 @@
             <div class="mb-3 form-group">
                 <label for="price">Price: $</label>
                 <input type="number" step="0.01" name="price" id="price" class="form-control" min="0"
-                       placeholder="Price">
+                       placeholder="Price" style="border: 2px solid green">
             </div>
         </form>
         <div class="container">
             <button class="btn btn-lg btn-success" id="btnUpdateBook">Update Book</button>
+            <span id="issueMessage" style="color: red"></span>
         </div>
         <br>
         <p id="updatedMessage"></p>
     </div>
 </div>
 <script>
+    document.getElementById("title").addEventListener("input", (event) => {
+        if(document.getElementById("title").value.length > 0) {
+            document.getElementById("title").style.borderColor = "green";
+        }
+        else {
+            document.getElementById("title").style.borderColor = "red";
+        }
+    });
+    document.getElementById("year").addEventListener("input", (event) => {
+        if(document.getElementById("year").value < 1454 || document.getElementById("year").value % 1 !== 0.0
+            || document.getElementById("year").value.toString().indexOf(".") >= 0 || document.getElementById("year").value > 2021) {
+            document.getElementById("year").style.borderColor = "red";
+        }
+        else {
+            document.getElementById("year").style.borderColor = "green";
+        }
+    });
+    document.getElementById("price").addEventListener("input", (event) => {
+        let testPrice = document.getElementById("price").value;
+        let stringTestPrice = testPrice.toString();
+        let decimalPoint = stringTestPrice.indexOf(".");
+        let randomE = stringTestPrice.indexOf("e");
+        let decimalValue = stringTestPrice.slice(decimalPoint);
+        if(document.getElementById("price").value < 0 || randomE >= 0 || (decimalPoint >= 0 && decimalValue.length > 3)) {
+            document.getElementById("price").style.borderColor = "red";
+        }
+        else {
+            document.getElementById("price").style.borderColor = "green";
+        }
+
+    });
     function CreateAuthorList(data){
         let list = "";
         let i = 0;
@@ -164,40 +197,82 @@
             if (this.readyState == 4 && this.status == 200){
                 document.getElementById("updateForm").style.visibility = "visible";
                 InsertValues(JSON.parse(this.responseText));
+                document.getElementById("errorSearchBook").innerHTML = "";
+            }
+            else if(this.readyState == 4 && (this.status == 404 || this.status == 500)) {
+                document.getElementById("errorSearchBook").innerHTML = "Whoops! It looks like we don't have a book for that ID!";
             }
         };
         xhttp.open('GET', url, true);
         xhttp.send();
     });
 
-    document.getElementById("btnUpdateBook").addEventListener("click", (event) => {
-        let url = "https://thawing-sea-51557.herokuapp.com/api/books/";
-        let xhttp = new XMLHttpRequest();
-
-        xhttp.onreadystatechange = function (){
-            if (this.readyState == 4 && this.status == 200){
-                document.getElementById("updatedMessage").innerHTML +=
-                    "Your book has been updated!";
-            }
-        };
-        let bookData = "title=" + document.getElementById("title").value + "&description=" + document.getElementById("description").value +
-            "&year=" + document.getElementById("year").value;
+    function FormValidation() {
         let allAuthors = document.getElementsByName("author");
         let length = allAuthors.length;
+        if(document.getElementById("title").value.length === 0) {
+            document.getElementById("issueMessage").innerHTML = "Please fill out all required forms.";
+            return false;
+        }
+        let isCheckedAuthor = false;
         for(let i = 0; i < length; i++) {
             if(allAuthors[i].checked){
-                bookData += "&author=" + allAuthors[i].value;
+                isCheckedAuthor = true;
+                break;
             }
         }
-        let hCover = false;
-        if(document.getElementById("hardCoverY").checked) {
-            hCover = true;
+        if(!isCheckedAuthor) {
+            document.getElementById("issueMessage").innerHTML = "Please fill out all required forms.";
+            return false;
         }
-        bookData += "&hardCover=" + hCover + "&price=" + document.getElementById("price").value + "&";
-        xhttp.open('PATCH', url, true);
-        xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhttp.send(bookData);
-    })
+        if((document.getElementById("year").value && document.getElementById("year").value < 1454) || document.getElementById("year").value % 1 !== 0.0
+            || document.getElementById("year").value.toString().indexOf(".") >= 0 || document.getElementById("year").value > 2021) {
+            document.getElementById("issueMessage").innerHTML = "Please ensure YEAR is an integer from 1454 to 2021.";
+            return false;
+        }
+        let testPrice = document.getElementById("price").value;
+        let stringTestPrice = testPrice.toString();
+        let decimalPoint = stringTestPrice.indexOf(".");
+        let randomE = stringTestPrice.indexOf("e");
+        let decimalValue = stringTestPrice.slice(decimalPoint);
+        if(document.getElementById("price").value < 0 || randomE >= 0 || (decimalPoint >= 0 && decimalValue.length > 3)) {
+            document.getElementById("issueMessage").innerHTML = "Please ensure PRICE is a real number with 2 or less decimal points.";
+            return false;
+        }
+
+        return true;
+    }
+    document.getElementById("btnUpdateBook").addEventListener("click", (event) => {
+        if(FormValidation()){
+            document.getElementById("issueMessage").innerHTML = "";
+            let url = "https://thawing-sea-51557.herokuapp.com/api/books/";
+            let xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function (){
+                if (this.readyState == 4 && this.status == 200){
+                    document.getElementById("updatedMessage").innerHTML +=
+                        "Your book has been updated!";
+                }
+            };
+            let bookData = "title=" + document.getElementById("title").value + "&description=" + document.getElementById("description").value +
+                "&year=" + document.getElementById("year").value;
+            let allAuthors = document.getElementsByName("author");
+            let length = allAuthors.length;
+            for(let i = 0; i < length; i++) {
+                if(allAuthors[i].checked){
+                    bookData += "&author=" + allAuthors[i].value;
+                }
+            }
+            let hCover = false;
+            if(document.getElementById("hardCoverY").checked) {
+                hCover = true;
+            }
+            bookData += "&hardCover=" + hCover + "&price=" + document.getElementById("price").value + "&";
+            xhttp.open('PATCH', url, true);
+            xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhttp.send(bookData);
+        }
+    });
 </script>
 </body>
 </html>
