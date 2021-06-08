@@ -101,16 +101,16 @@
     document.getElementById("btnUpdateAuthor").addEventListener("click", (event) => {
         let url = "https://thawing-sea-51557.herokuapp.com/api/authors/" + document.getElementById("authorID").value;
         let xhttp = new XMLHttpRequest();
-        xhttp.open('PATCH', url, true);
-        xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhttp.onreadystatechange = function (){
+            document.getElementById("test").innerHTML += this.status;
             if (this.readyState == 4 && this.status == 200){
                 document.getElementById("updatedMessage").innerHTML +=
                     "Your author has been updated!";
             }
         };
+        xhttp.open('PATCH', url, true);
+        xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         let authorData = "name=" + document.getElementById("name").value + "&nationality=" + document.getElementById("nationality").value;
-        document.getElementById("test").innerHTML += url;
         xhttp.send(authorData);
     });
     document.getElementById("btnSearchAuthor").addEventListener("click", (event) =>{
@@ -121,7 +121,6 @@
             if (this.readyState == 4 && this.status == 200){
                 document.getElementById("updateForm").style.visibility = "visible";
                 InsertValues(JSON.parse(this.responseText));
-                document.getElementById("btnUpdateAuthor").innerHTML = "AAAhhAAAA";
             }
             else {
 

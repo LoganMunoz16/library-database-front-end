@@ -66,21 +66,21 @@
 <div class="container">
         <form>
             <div class="mb-3 form-group">
-                <label for="title">Title:</label>
+                <label for="title" style="font-weight: bold">Title (Required):</label>
                 <input type="text" name="title" id="title" class="form-control"
-                       placeholder="Title">
+                       placeholder="Title" style="border: 2px solid red">
             </div>
             <div class="mb-3 form-group">
                 <label for="description">Description:</label>
                 <input type="text" name="description" id="description" class="form-control"
-                       placeholder="Description">
+                       placeholder="Description" style="border: 2px solid green">
             </div>
             <div class="mb-3 form-group">
-                <label for="year">Year Published:</label>
-                <input type="number" step="1" name="year" id="year" class="form-control" min="0" max="2021"
-                       placeholder="Year">
+                <label for="year">Year Published (1454 - 2021):</label>
+                <input type="number" step="1" name="year" id="year" class="form-control" min="1454" max="2021"
+                       placeholder="Year" style="border: 2px solid green">
             </div>
-            <p>Author(s):</p>
+            <p style="font-weight: bold">Author(s) (Required):</p>
             <div class="mb-3 form-check">
                 <ul id="authors"  style="list-style-type: none">
                 </ul>
@@ -95,18 +95,50 @@
                 </div>
             </div>
             <div class="mb-3 form-group">
-                <label for="price">Price: $</label>
+                <label for="price">Price (Number with up to 2 decimal places):</label>
                 <input type="number" step="0.01" name="price" id="price" class="form-control" min="0"
-                       placeholder="Price">
+                       placeholder="Price" style="border: 2px solid green">
             </div>
         </form>
     <div class="container">
         <button class="btn btn-lg btn-success" id="btnAddBook">Add Book</button>
+        <span id="issueMessage" style="color: red"></span>
     </div>
     <br>
     <p id="addedBook">This is the id of the book you added: </p>
 </div>
 <script>
+    document.getElementById("title").addEventListener("input", (event) => {
+        if(document.getElementById("title").value.length > 0) {
+            document.getElementById("title").style.borderColor = "green";
+        }
+        else {
+            document.getElementById("title").style.borderColor = "red";
+        }
+    });
+    document.getElementById("year").addEventListener("input", (event) => {
+        if(document.getElementById("year").value < 1454 || document.getElementById("year").value % 1 !== 0.0
+            || document.getElementById("year").value.toString().indexOf(".") >= 0 || document.getElementById("year").value > 2021) {
+            document.getElementById("year").style.borderColor = "red";
+        }
+        else {
+            document.getElementById("year").style.borderColor = "green";
+        }
+    });
+    document.getElementById("price").addEventListener("input", (event) => {
+        let testPrice = document.getElementById("price").value;
+        let stringTestPrice = testPrice.toString();
+        let decimalPoint = stringTestPrice.indexOf(".");
+        let randomE = stringTestPrice.indexOf("e");
+        let decimalValue = stringTestPrice.slice(decimalPoint);
+        if(document.getElementById("price").value < 0 || randomE >= 0 || (decimalPoint >= 0 && decimalValue.length > 3)) {
+            document.getElementById("price").style.borderColor = "red";
+        }
+        else {
+            document.getElementById("price").style.borderColor = "green";
+        }
+
+    });
     function CreateAuthorList(data){
         let list = "";
         let i = 0;
@@ -130,33 +162,72 @@
         xhttp.send();
     });
 
-    document.getElementById("btnAddBook").addEventListener("click", (event) => {
-        let url = "https://thawing-sea-51557.herokuapp.com/api/books/";
-        let xhttp = new XMLHttpRequest();
-
-        xhttp.onreadystatechange = function (){
-            if (this.readyState == 4 && this.status == 200){
-                document.getElementById("addedBook").innerHTML +=
-                    JSON.parse(this.responseText)["id"];
-            }
-        };
-        let bookData = "title=" + document.getElementById("title").value + "&description=" + document.getElementById("description").value +
-            "&year=" + document.getElementById("year").value;
+    function FormValidation() {
         let allAuthors = document.getElementsByName("author");
         let length = allAuthors.length;
+        if(document.getElementById("title").value.length === 0) {
+            document.getElementById("issueMessage").innerHTML = "Please fill out all required forms.";
+            return false;
+        }
+        let isCheckedAuthor = false;
         for(let i = 0; i < length; i++) {
             if(allAuthors[i].checked){
-                bookData += "&author=" + allAuthors[i].value;
+                isCheckedAuthor = true;
+                break;
             }
         }
-        let hCover = false;
-        if(document.getElementById("hardCoverY").checked) {
-            hCover = true;
+        if(!isCheckedAuthor) {
+            document.getElementById("issueMessage").innerHTML = "Please fill out all required forms.";
+            return false;
         }
-        bookData += "&hardCover=" + hCover + "&price=" + document.getElementById("price").value + "&";
-        xhttp.open('POST', url, true);
-        xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhttp.send(bookData);
+        if(document.getElementById("year").value < 1454 || document.getElementById("year").value % 1 !== 0.0
+            || document.getElementById("year").value.toString().indexOf(".") >= 0 || document.getElementById("year").value > 2021) {
+            document.getElementById("issueMessage").innerHTML = "Please ensure YEAR is an integer from 1454 to 2021.";
+            return false;
+        }
+        let testPrice = document.getElementById("price").value;
+        let stringTestPrice = testPrice.toString();
+        let decimalPoint = stringTestPrice.indexOf(".");
+        let randomE = stringTestPrice.indexOf("e");
+        let decimalValue = stringTestPrice.slice(decimalPoint);
+        if(document.getElementById("price").value < 0 || randomE >= 0 || (decimalPoint >= 0 && decimalValue.length > 3)) {
+            document.getElementById("issueMessage").innerHTML = "Please ensure PRICE is a real number with 2 or less decimal points.";
+            return false;
+        }
+
+        return true;
+    }
+    document.getElementById("btnAddBook").addEventListener("click", (event) => {
+        if(FormValidation()) {
+            document.getElementById("issueMessage").innerHTML = "";
+            let allAuthors = document.getElementsByName("author");
+            let length = allAuthors.length;
+            let url = "https://thawing-sea-51557.herokuapp.com/api/books/";
+            let xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function (){
+                if (this.readyState == 4 && this.status == 200){
+                    document.getElementById("addedBook").innerHTML +=
+                        JSON.parse(this.responseText)["id"];
+                }
+            };
+            let bookData = "title=" + document.getElementById("title").value + "&description=" + document.getElementById("description").value +
+                "&year=" + document.getElementById("year").value;
+            for(let i = 0; i < length; i++) {
+                if(allAuthors[i].checked){
+                    bookData += "&author=" + allAuthors[i].value;
+                }
+            }
+            let hCover = false;
+            if(document.getElementById("hardCoverY").checked) {
+                hCover = true;
+            }
+            bookData += "&hardCover=" + hCover + "&price=" + document.getElementById("price").value + "&";
+            xhttp.open('POST', url, true);
+            xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhttp.send(bookData);
+        }
+
     })
 </script>
 </body>

@@ -54,6 +54,110 @@
         </ul>
     </div>
 </nav>
+<br>
+<br>
+<h1 class="text-center mt-4 pb-2">Delete a Book</h1>
+<p class="text-center">ID's can be found on the master book list!</p>
+<p id="test1"></p>
+<br>
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label for="bookID">Enter Book ID:</label>
+            <input id="bookID" name="bookID" type="text" class="form-control" placeholder="ID">
+        </div>
+    </form>
+    <button class="btn btn-lg btn-success" id="btnSearchBook">Find My Book!</button>
+    <button class="btn btn-lg btn-danger" id="btnDeleteBook">DELETE</button>
+</div>
+<div class="jumbotron" id="foundBook">
 
+</div>
+<p id="test"></p>
+<script>
+    function CreateTable(data){
+        let table = "";
+        table =
+            '<table class="table table-bordered table-hover"> \n' +
+            '   <thead>\n' +
+            '       <tr>\n' +
+            '           <th scope="col">Title</th> \n'+
+            '           <th scope="col">Description</th> \n'+
+            '           <th scope="col">Author(s)</th> \n'+
+            '           <th scope="col">Year</th> \n'+
+            '           <th scope="col">Hardcover</th> \n'+
+            '           <th scope="col">Price</th> \n'+
+            '           <th scope="col">ID</th> \n'+
+            '       </tr>\n' +
+            '   </thead>\n' +
+            '   <tbody>\n';
+
+        let j = 0;
+        for(let i = 0; i < data["author"].length; i++) {
+            getAuthorNames(data["author"][i], j);
+        }
+        table +=
+            '       <tr>\n' +
+            '           <td>' + data["title"]+  '</td>\n' +
+            '           <td style="width:30%">' + data["description"]+  '</td>\n' +
+            '           <td id="authors' + j +'"></td>\n' +
+            '           <td>' + data["year"]+  '</td>\n';
+        if(data["hardCover"]) {
+            table += '           <td>Yes</td>\n';
+        }
+        else {
+            table += '           <td>No</td>\n';
+        }
+        table +=
+            '           <td>$' + data["price"].toFixed(2)+  '</td>\n' +
+            '           <td>' + data["_id"]+  '</td>\n' +
+            '       </tr>\n';
+
+
+        table +=
+            '   </tbody>\n' +
+            '</table>\n';
+        return table;
+    }
+    function getAuthorNames(data, id) {
+        let fullId = "authors" + id.toString();
+        let url = "https://thawing-sea-51557.herokuapp.com/api/authors/" + data;
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function (){
+            if (this.readyState == 4 && this.status == 200){
+                document.getElementById(fullId).innerHTML += JSON.parse(this.responseText)["name"] + "<hr>";
+            }
+        };
+        xhttp.open('GET', url, true);
+        xhttp.send();
+    }
+    document.getElementById("btnSearchBook").addEventListener("click", (event) =>{
+        let bookID = document.getElementById("bookID").value;
+        let url = "https://thawing-sea-51557.herokuapp.com/api/books/" + bookID;
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function (){
+            if (this.readyState == 4 && this.status == 200){
+                document.getElementById("foundBook").innerHTML =
+                    CreateTable(JSON.parse(this.responseText));
+            }
+        };
+        xhttp.open('GET', url, true);
+        xhttp.send();
+    });
+    document.getElementById("btnDeleteBook").addEventListener("click", (event) =>{
+       let bookID = document.getElementById("bookID").value;
+       let url = "https://thawing-sea-51557.herokuapp.com/api/books/" + bookID;
+       let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function(){
+            document.getElementById("test").innerHTML += this.status;
+            if(this.readyState == 4 && this.status == 200){
+                document.getElementById("test1").innerHTML = "this happened";
+            }
+        };
+        xhttp.open('DELETE', url, true);
+        xhttp.send();
+    });
+
+</script>
 </body>
 </html>

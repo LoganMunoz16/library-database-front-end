@@ -105,8 +105,8 @@
                 document.getElementById("foundAuthor").innerHTML =
                     CreateTable(JSON.parse(this.responseText));
             }
-            else {
-
+            else if(this.readyState == 4 && (this.status == 404 || this.status == 500)) {
+                document.getElementById("foundAuthor").innerHTML = "Whoops! It looks like we don't have an author for that ID!";
             }
         };
         xhttp.open('GET', url, true);

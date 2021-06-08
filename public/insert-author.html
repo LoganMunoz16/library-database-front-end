@@ -60,24 +60,38 @@
 <div class="container">
     <form>
         <div class="mb-3 form-group">
-            <label for="name">Name:</label>
+            <label for="name">Name (Required):</label>
             <input type="text" name="name" id="name" class="form-control"
-                   placeholder="Name">
+                   placeholder="Name" style="border: 2px solid red">
         </div>
         <div class="mb-3 form-group">
             <label for="nationality">Nationality:</label>
             <input type="text" name="nationality" id="nationality" class="form-control"
-                   placeholder="Nationality">
+                   placeholder="Nationality" style="border: 2px solid green">
         </div>
     </form>
     <div class="container">
         <button class="btn btn-lg btn-success" id="btnAddAuthor">Add Author</button>
+        <span id="issueMessage" style="color: red" class="ml-2"></span>
     </div>
     <br>
     <p id="addedAuthor">This is the id of the book you added!: </p>
 </div>
 <script>
+    document.getElementById("name").addEventListener("input", (event) => {
+        if(document.getElementById("name").value.length > 0) {
+            document.getElementById("name").style.borderColor = "green";
+        }
+        else {
+            document.getElementById("name").style.borderColor = "red";
+        }
+    });
     document.getElementById("btnAddAuthor").addEventListener("click", (event) => {
+        if(document.getElementById("name").value.length === 0) {
+            document.getElementById("issueMessage").innerHTML = "Please fill all required forms.";
+            return;
+        }
+        document.getElementById("issueMessage").innerHTML = "";
         let url = "https://thawing-sea-51557.herokuapp.com/api/authors/";
         let xhttp = new XMLHttpRequest();
         xhttp.open('POST', url, true);

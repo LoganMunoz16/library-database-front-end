@@ -132,15 +132,14 @@
     document.getElementById("btnSearchBook").addEventListener("click", (event) =>{
         let bookID = document.getElementById("bookID").value;
         let url = "https://thawing-sea-51557.herokuapp.com/api/books/" + bookID;
-        document.getElementById("test").innerHTML = url;
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
             if (this.readyState == 4 && this.status == 200){
                 document.getElementById("foundBook").innerHTML =
                 CreateTable(JSON.parse(this.responseText));
             }
-            else {
-                document.getElementById("test").innerHTML = "test";
+            else if(this.readyState == 4 && (this.status == 404 || this.status == 500)) {
+                document.getElementById("foundBook").innerHTML = "Whoops! It looks like we don't have a book for that ID!";
             }
         };
         xhttp.open('GET', url, true);
