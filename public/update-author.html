@@ -30,6 +30,8 @@
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="show-book.html">Book Info</a>
                     <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="search-book-title.html">Search Book Title</a>
+                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="insert-book.html">Add Book</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="update-book.html">Update Book</a>
@@ -92,7 +94,6 @@
             <span id="issueMessage" style="color: red" class="ml-2"></span>
         </div>
         <br>
-        <div id="updatedMessage"></div>
     </div>
 </div>
 <script>
@@ -117,10 +118,11 @@
         let url = "https://thawing-sea-51557.herokuapp.com/api/authors/" + document.getElementById("authorID").value;
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
-            document.getElementById("test").innerHTML += this.status;
             if (this.readyState == 4 && this.status == 200){
-                document.getElementById("updatedMessage").innerHTML +=
+                document.getElementById("issueMessage").innerHTML +=
                     "Your author has been updated!";
+                document.getElementById("issueMessage").style.color = "green";
+                document.getElementById("issueMessage").style.fontSize = "16pt";
             }
         };
         xhttp.open('PATCH', url, true);

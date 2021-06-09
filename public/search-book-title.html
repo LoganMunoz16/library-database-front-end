@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Library | Authors</title>
+    <title>Library | Search Book Title</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -22,7 +22,7 @@
                 <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item dropdown pr-4">
-                <a class="nav-link dropdown-toggle" href="#" id="booksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link active dropdown-toggle" href="#" id="booksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Books
                 </a>
                 <div class="dropdown-menu mt-2" aria-labelledby="navbarDropdown">
@@ -40,7 +40,7 @@
                 </div>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link active dropdown-toggle" href="#" id="authorsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" id="authorsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Authors
                 </a>
                 <div class="dropdown-menu mt-2" aria-labelledby="navbarDropdown">
@@ -58,11 +58,23 @@
 </nav>
 <br>
 <br>
-<h1 class="text-center mt-4 pb-2">Our Authors</h1>
-<hr>
-<div style="width:95%; margin-left: auto; margin-right: auto" id="allBooks">
+<h1 class="text-center mt-4 pb-2">Search by Title</h1>
+<br>
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label for="bookTitle">Enter Book Title or Keyword:</label>
+            <input id="bookTitle" name="bookTitle" type="text" class="form-control" placeholder="Title">
+        </div>
+    </form>
+    <button class="btn btn-lg btn-success" id="btnSearchBook">Find My Book!</button>
+    <span id="issueMessage" style="color: red" class="ml-2"></span>
+</div>
+<br>
+<div style="width:95%; margin-left: auto; margin-right: auto" id="foundBook">
 
 </div>
+<p id="test"></p>
 <script>
     function CreateTable(data){
         let table = "";
@@ -70,19 +82,39 @@
             '<table class="table table-bordered table-hover table-striped table-dark"> \n' +
             '   <thead>\n' +
             '       <tr class="table-active">\n' +
-            '           <th scope="col">Name</th> \n'+
-            '           <th scope="col">Nationality</th> \n'+
+            '           <th scope="col">Title</th> \n'+
+            '           <th scope="col">Description</th> \n'+
+            '           <th scope="col">Author(s)</th> \n'+
+            '           <th scope="col">Year</th> \n'+
+            '           <th scope="col">Hardcover</th> \n'+
+            '           <th scope="col">Price</th> \n'+
             '           <th scope="col">ID</th> \n'+
             '       </tr>\n' +
             '   </thead>\n' +
             '   <tbody>\n';
-        for (let author in data){
+
+        let j = 0;
+        for (let book in data){
+            for(let i = 0; i < data[book]["author"].length; i++) {
+                getAuthorNames(data[book]["author"][i], j);
+            }
             table +=
                 '       <tr>\n' +
-                '           <td>' + data[author]["name"]+  '</td>\n' +
-                '           <td>' + data[author]["nationality"]+  '</td>\n'+
-                '           <td>' + data[author]["_id"]+  '</td>\n'+
+                '           <td style="width:22%">' + data[book]["title"]+  '</td>\n' +
+                '           <td style="width:30%">' + data[book]["description"]+  '</td>\n' +
+                '           <td id="authors' + j +'"></td>\n' +
+                '           <td>' + data[book]["year"]+  '</td>\n';
+            if(data[book]["hardCover"]) {
+                table += '           <td>Yes</td>\n';
+            }
+            else {
+                table += '           <td>No</td>\n';
+            }
+            table +=
+                '           <td>$' + data[book]["price"].toFixed(2)+  '</td>\n' +
+                '           <td>' + data[book]["_id"]+  '</td>\n' +
                 '       </tr>\n';
+            j++;
         }
 
         table +=
@@ -90,18 +122,36 @@
             '</table>\n'
         return table;
     }
-    window.addEventListener("load", (event) =>{
-        let url = "https://thawing-sea-51557.herokuapp.com/api/authors";
+    function getAuthorNames(data, id) {
+        let fullId = "authors" + id.toString();
+        let url = "https://thawing-sea-51557.herokuapp.com/api/authors/" + data;
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
             if (this.readyState == 4 && this.status == 200){
-                document.getElementById("allBooks").innerHTML =
+                document.getElementById(fullId).innerHTML += JSON.parse(this.responseText)["name"] + "<br>";
+            }
+        };
+        xhttp.open('GET', url, true);
+        xhttp.send();
+    }
+    document.getElementById("btnSearchBook").addEventListener("click", (event) =>{
+        let title = document.getElementById("bookTitle").value;
+        let url = "https://thawing-sea-51557.herokuapp.com/api/books/?title=" + title;
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function (){
+            if (this.readyState == 4 && this.status == 200){
+                document.getElementById("foundBook").innerHTML =
                     CreateTable(JSON.parse(this.responseText));
+                document.getElementById("issueMessage").innerHTML = "";
+            }
+            else if(this.readyState == 4 && (this.status == 404 || this.status == 500)) {
+                document.getElementById("issueMessage").innerHTML = "Whoops! It looks like there is no book with that in the title!";
             }
         };
         xhttp.open('GET', url, true);
         xhttp.send();
     });
+
 </script>
 </body>
 </html>

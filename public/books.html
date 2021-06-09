@@ -30,6 +30,8 @@
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="show-book.html">Book Info</a>
                     <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="search-book-title.html">Search Book Title</a>
+                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="insert-book.html">Add Book</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="update-book.html">Update Book</a>
@@ -86,7 +88,7 @@
             }
             table +=
                 '       <tr>\n' +
-                '           <td>' + data[book]["title"]+  '</td>\n' +
+                '           <td style="width:22%">' + data[book]["title"]+  '</td>\n' +
                 '           <td style="width:30%">' + data[book]["description"]+  '</td>\n' +
                 '           <td id="authors' + j +'"></td>\n' +
                 '           <td>' + data[book]["year"]+  '</td>\n';

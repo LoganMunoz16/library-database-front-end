@@ -30,6 +30,8 @@
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="show-book.html">Book Info</a>
                     <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="search-book-title.html">Search Book Title</a>
+                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="insert-book.html">Add Book</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="update-book.html">Update Book</a>
@@ -113,7 +115,6 @@
             <span id="issueMessage" style="color: red"></span>
         </div>
         <br>
-        <p id="updatedMessage"></p>
     </div>
 </div>
 <script>
@@ -245,13 +246,19 @@
     document.getElementById("btnUpdateBook").addEventListener("click", (event) => {
         if(FormValidation()){
             document.getElementById("issueMessage").innerHTML = "";
-            let url = "https://thawing-sea-51557.herokuapp.com/api/books/";
+            let bookID = document.getElementById("bookID").value;
+            let url = "https://thawing-sea-51557.herokuapp.com/api/books/" + bookID;
             let xhttp = new XMLHttpRequest();
 
             xhttp.onreadystatechange = function (){
                 if (this.readyState == 4 && this.status == 200){
-                    document.getElementById("updatedMessage").innerHTML +=
+                    document.getElementById("issueMessage").innerHTML +=
                         "Your book has been updated!";
+                    document.getElementById("issueMessage").style.color = "green";
+                    document.getElementById("issueMessage").style.fontSize = "16pt";
+                }
+                else if(this.readyState == 4 && (this.status == 404 || this.status == 500)) {
+                    document.getElementById("issueMessage").innerHTML = "Whoops! It looks like we don't have a book for that ID!";
                 }
             };
             let bookData = "title=" + document.getElementById("title").value + "&description=" + document.getElementById("description").value +
@@ -267,7 +274,7 @@
             if(document.getElementById("hardCoverY").checked) {
                 hCover = true;
             }
-            bookData += "&hardCover=" + hCover + "&price=" + document.getElementById("price").value + "&";
+            bookData += "&hardCover=" + hCover + "&price=" + document.getElementById("price").value;
             xhttp.open('PATCH', url, true);
             xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhttp.send(bookData);
