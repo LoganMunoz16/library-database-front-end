@@ -138,6 +138,7 @@
         let bookID = document.getElementById("bookID").value;
         if(bookID.length === 0) {
             document.getElementById("issueMessage").innerHTML = "Whoops! It looks like we don't have a book for that ID!";
+
             return;
         }
         let url = "https://thawing-sea-51557.herokuapp.com/api/books/" + bookID;
@@ -150,6 +151,7 @@
             }
             else if(this.readyState == 4 && (this.status == 404 || this.status == 500)) {
                 document.getElementById("issueMessage").innerHTML = "Whoops! It looks like we don't have a book for that ID!";
+                document.getElementById("foundBook").innerHTML = "";
             }
         };
         xhttp.open('GET', url, true);
@@ -170,6 +172,7 @@
             }
             else if(this.readyState == 4 && (this.status == 404 || this.status == 500)) {
                 document.getElementById("issueMessage").innerHTML = "Whoops! It looks like we don't have a book for that ID!";
+                document.getElementById("foundBook").innerHTML = "";
             }
         };
        xhttp.send();
