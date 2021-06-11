@@ -77,6 +77,11 @@
 <p id="test"></p>
 <script>
     function CreateTable(data){
+        if(data.length === 0) {
+            document.getElementById("foundBook").innerHTML = "";
+            document.getElementById("issueMessage").innerHTML = "Whoops! It looks like there is no book with that in the title!";
+            return "";
+        }
         let table = "";
         table =
             '<table class="table table-bordered table-hover table-striped table-dark"> \n' +
@@ -140,9 +145,9 @@
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
             if (this.readyState == 4 && this.status == 200){
+                document.getElementById("issueMessage").innerHTML = "";
                 document.getElementById("foundBook").innerHTML =
                     CreateTable(JSON.parse(this.responseText));
-                document.getElementById("issueMessage").innerHTML = "";
             }
             else if(this.readyState == 4 && (this.status == 404 || this.status == 500)) {
                 document.getElementById("issueMessage").innerHTML = "Whoops! It looks like there is no book with that in the title!";

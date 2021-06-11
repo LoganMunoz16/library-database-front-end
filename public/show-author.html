@@ -102,6 +102,10 @@
     }
     document.getElementById("btnSearchAuthor").addEventListener("click", (event) =>{
         let authorID = document.getElementById("authorID").value;
+        if(authorID.length === 0) {
+            document.getElementById("issueMessage").innerHTML = "Whoops! It looks like we don't have an author for that ID!";
+            return;
+        }
         let url = "https://thawing-sea-51557.herokuapp.com/api/authors/" + authorID;
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){

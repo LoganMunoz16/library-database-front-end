@@ -95,13 +95,13 @@
             '   <tbody>\n';
 
             for(let i = 0; i < data["author"].length; i++) {
-                getAuthorNames(data["author"][i], j);
+                getAuthorNames(data["author"][i]);
             }
             table +=
                 '       <tr>\n' +
                 '           <td style="width:22%">' + data["title"]+  '</td>\n' +
                 '           <td style="width:30%">' + data["description"]+  '</td>\n' +
-                '           <td id="authors' + j +'"></td>\n' +
+                '           <td id="authors0"></td>\n' +
                 '           <td>' + data["year"]+  '</td>\n';
             if(data["hardCover"]) {
                 table += '           <td>Yes</td>\n';
@@ -118,10 +118,11 @@
         table +=
             '   </tbody>\n' +
             '</table>\n';
+        document.getElementById("issueMessage").innerHTML = "here";
         return table;
     }
-    function getAuthorNames(data, id) {
-        let fullId = "authors" + id.toString();
+    function getAuthorNames(data) {
+        let fullId = "authors0";
         let url = "https://thawing-sea-51557.herokuapp.com/api/authors/" + data;
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
@@ -134,19 +135,22 @@
     }
     document.getElementById("btnSearchBook").addEventListener("click", (event) =>{
         let bookID = document.getElementById("bookID").value;
+        if(bookID.length === 0) {
+            document.getElementById("issueMessage").innerHTML = "Whoops! It looks like we don't have a book for that ID!";
+            return;
+        }
         let url = "https://thawing-sea-51557.herokuapp.com/api/books/" + bookID;
         let xhttp = new XMLHttpRequest();
+        xhttp.open('GET', url, true);
         xhttp.onreadystatechange = function (){
             if (this.readyState == 4 && this.status == 200){
-                document.getElementById("foundBook").innerHTML =
-                CreateTable(JSON.parse(this.responseText));
+                document.getElementById("foundBook").innerHTML = CreateTable(JSON.parse(this.responseText));
                 document.getElementById("issueMessage").innerHTML = "";
             }
             else if(this.readyState == 4 && (this.status == 404 || this.status == 500)) {
                 document.getElementById("issueMessage").innerHTML = "Whoops! It looks like we don't have a book for that ID!";
             }
         };
-        xhttp.open('GET', url, true);
         xhttp.send();
     });
 

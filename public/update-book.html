@@ -179,7 +179,7 @@
 
     }
     window.addEventListener("load", (event) =>{
-        let url = "https://thawing-sea-51557.herokuapp.com/api/authors";
+        let url = "https://thawing-sea-51557.herokuapp.com/api/authors/";
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
             if (this.readyState == 4 && this.status == 200){
@@ -192,6 +192,10 @@
     });
     document.getElementById("btnSearchBook").addEventListener("click", (event) =>{
         let bookID = document.getElementById("bookID").value;
+        if(bookID.length === 0) {
+            document.getElementById("errorSearchBook").innerHTML = "Whoops! It looks like we don't have a book for that ID!";
+            return;
+        }
         let url = "https://thawing-sea-51557.herokuapp.com/api/books/" + bookID;
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
