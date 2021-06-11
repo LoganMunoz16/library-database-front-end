@@ -76,6 +76,10 @@
 
 </div>
 <script>
+    /*
+    * Create Table
+    * Makes the table based off of the author found
+     */
     function CreateTable(data){
         let table = "";
         table =
@@ -100,6 +104,9 @@
             '</table>\n'
         return table;
     }
+
+    //Looks for the author with the id you entered
+    //Catches if there is no id, a wrong id, or a bad id
     document.getElementById("btnSearchAuthor").addEventListener("click", (event) =>{
         let authorID = document.getElementById("authorID").value;
         if(authorID.length === 0) {

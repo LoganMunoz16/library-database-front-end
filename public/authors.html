@@ -60,10 +60,14 @@
 <br>
 <h1 class="text-center mt-4 pb-2">Our Authors</h1>
 <hr>
-<div style="width:95%; margin-left: auto; margin-right: auto" id="allBooks">
+<div style="width:95%; margin-left: auto; margin-right: auto" id="allAuthors">
 
 </div>
 <script>
+    /*
+    * Create Table
+    * Makes the table based on all the author information gathered
+     */
     function CreateTable(data){
         let table = "";
         table =
@@ -90,12 +94,14 @@
             '</table>\n'
         return table;
     }
+
+    //As with books, this loads all the authors right when the page is loaded
     window.addEventListener("load", (event) =>{
         let url = "https://thawing-sea-51557.herokuapp.com/api/authors/";
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
             if (this.readyState == 4 && this.status == 200){
-                document.getElementById("allBooks").innerHTML =
+                document.getElementById("allAuthors").innerHTML =
                     CreateTable(JSON.parse(this.responseText));
             }
         };

@@ -97,6 +97,7 @@
     </div>
 </div>
 <script>
+    //Like insert-author, watches the name input to ensure there is something there, red if not
     document.getElementById("name").addEventListener("input", (event) => {
         if(document.getElementById("name").value.length > 0) {
             document.getElementById("name").style.borderColor = "green";
@@ -105,10 +106,19 @@
             document.getElementById("name").style.borderColor = "red";
         }
     });
+
+    /*
+    * Insert Values
+    * Based on the id sent to it, it grabs all the data from the author in the database and fills out the values
+    * I wanted it this way so you know everything you input before, rather than trying to just change one field
+     */
     function InsertValues(data) {
         document.getElementById("name").value = data["name"];
         document.getElementById("nationality").value = data["nationality"];
     }
+
+    //Double checks the id is valid, and then sends a PATCH request with the new data
+    //Notifies user if there was an issue or if it worked
     document.getElementById("btnUpdateAuthor").addEventListener("click", (event) => {
         if(document.getElementById("name").value.length === 0) {
             document.getElementById("issueMessage").innerHTML = "Please fill all required forms.";
@@ -130,6 +140,8 @@
         let authorData = "name=" + document.getElementById("name").value + "&nationality=" + document.getElementById("nationality").value;
         xhttp.send(authorData);
     });
+
+    //Just like the show-author, finds the author based on the id passed, ensuring id is valid
     document.getElementById("btnSearchAuthor").addEventListener("click", (event) =>{
         let authorID = document.getElementById("authorID").value;
         if(authorID.length === 0) {

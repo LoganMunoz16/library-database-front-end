@@ -64,6 +64,11 @@
 
 </div>
 <script>
+
+    /*
+    * Create Table
+    * Takes in the data from the http request and creates a table in the div "allBooks"
+     */
     function CreateTable(data){
         let table = "";
         table =
@@ -81,7 +86,10 @@
             '   </thead>\n' +
             '   <tbody>\n';
 
-        let j = 0;
+
+        let j = 0; //Increments the id for the author td so I can assign the right authors to the right books
+
+        //This loop goes through all authors for this book and grabs their names to place in the table
         for (let book in data){
             for(let i = 0; i < data[book]["author"].length; i++) {
                 getAuthorNames(data[book]["author"][i], j);
@@ -110,6 +118,11 @@
             '</table>\n'
         return table;
     }
+
+    /*
+    * getAuthorNames
+    * Takes in the author id for a book, and then GETs that author's name and puts it into the table
+     */
     function getAuthorNames(data, id) {
         let fullId = "authors" + id.toString();
             let url = "https://thawing-sea-51557.herokuapp.com/api/authors/" + data;
@@ -122,6 +135,8 @@
             xhttp.open('GET', url, true);
             xhttp.send();
     }
+
+    //This listener loads the table right when you enter the page - looks a bit cleaner than a button
     window.addEventListener("load", (event) =>{
         let url = "https://thawing-sea-51557.herokuapp.com/api/books/";
         let xhttp = new XMLHttpRequest();

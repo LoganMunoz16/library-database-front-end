@@ -76,7 +76,12 @@
 </div>
 <p id="test"></p>
 <script>
+    /*
+    * Create Table
+    * Makes a table with all the books based on data gathered from GET request
+     */
     function CreateTable(data){
+        //If nothing is gathered just gives the error message
         if(data.length === 0) {
             document.getElementById("foundBook").innerHTML = "";
             document.getElementById("issueMessage").innerHTML = "Whoops! It looks like there is no book with that in the title!";
@@ -99,6 +104,8 @@
             '   <tbody>\n';
 
         let j = 0;
+
+        //***See the books.html for more information, but grabs authors and puts them with the right book
         for (let book in data){
             for(let i = 0; i < data[book]["author"].length; i++) {
                 getAuthorNames(data[book]["author"][i], j);
@@ -127,6 +134,11 @@
             '</table>\n'
         return table;
     }
+
+    /*
+    * getAuthorNames
+    * Grabs the name of the author from the id that is passed to the function and places in table
+     */
     function getAuthorNames(data, id) {
         let fullId = "authors" + id.toString();
         let url = "https://thawing-sea-51557.herokuapp.com/api/authors/" + data;
@@ -139,6 +151,8 @@
         xhttp.open('GET', url, true);
         xhttp.send();
     }
+
+    //The search button, sends a GET request with the title as a query to search the database
     document.getElementById("btnSearchBook").addEventListener("click", (event) =>{
         let title = document.getElementById("bookTitle").value;
         let url = "https://thawing-sea-51557.herokuapp.com/api/books/?title=" + title;

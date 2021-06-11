@@ -78,6 +78,10 @@
 </div>
 <p id="test"></p>
 <script>
+    /*
+    * Create Table
+    * Creates a table in "foundBook" with all of the book's info, although just a two row table
+     */
     function CreateTable(data){
         let table = "";
         table =
@@ -95,7 +99,9 @@
             '   </thead>\n' +
             '   <tbody>\n';
 
-        let j = 0;
+        let j = 0; //Left this here to be consistent with all books
+
+        //Goes through all the author id's for this book and gets their names to display
         for(let i = 0; i < data["author"].length; i++) {
             getAuthorNames(data["author"][i], j);
         }
@@ -122,6 +128,10 @@
             '</table>\n';
         return table;
     }
+    /*
+    *getAuthorNames
+    * Grabs the name of the author whose id is passed and adds it to the table
+     */
     function getAuthorNames(data, id) {
         let fullId = "authors" + id.toString();
         let url = "https://thawing-sea-51557.herokuapp.com/api/authors/" + data;
@@ -134,6 +144,9 @@
         xhttp.open('GET', url, true);
         xhttp.send();
     }
+
+    //This listener searches for a book with the id
+    //If you try to enter no id, a wrong id, or something that's not and id, it gives an error message
     document.getElementById("btnSearchBook").addEventListener("click", (event) =>{
         let bookID = document.getElementById("bookID").value;
         if(bookID.length === 0) {
@@ -157,6 +170,9 @@
         xhttp.open('GET', url, true);
         xhttp.send();
     });
+
+    //This listener deletes the book with the given id
+    //Displays when that happens, or an error if no id, wrong id, or not an id
     document.getElementById("btnDeleteBook").addEventListener("click", (event) =>{
        let bookID = document.getElementById("bookID").value;
        let url = "https://thawing-sea-51557.herokuapp.com/api/books/" + bookID;

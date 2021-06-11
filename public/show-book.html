@@ -77,6 +77,10 @@
 </div>
 <p id="test"></p>
 <script>
+    /*
+    * Create Table
+    * Makes a table displaying the book that you searched for
+     */
     function CreateTable(data){
         let table = "";
         table =
@@ -94,6 +98,7 @@
             '   </thead>\n' +
             '   <tbody>\n';
 
+            //Grabs the names of all the authors for this book
             for(let i = 0; i < data["author"].length; i++) {
                 getAuthorNames(data["author"][i]);
             }
@@ -121,6 +126,11 @@
         document.getElementById("issueMessage").innerHTML = "here";
         return table;
     }
+
+    /*
+    * Get Author Names
+    * Grabs the name of the author based on the id being sent
+     */
     function getAuthorNames(data) {
         let fullId = "authors0";
         let url = "https://thawing-sea-51557.herokuapp.com/api/authors/" + data;
@@ -133,6 +143,9 @@
         xhttp.open('GET', url, true);
         xhttp.send();
     }
+
+    //Send the GET request with the id to the database
+    //Pays attention if no id, bad id, wrong id
     document.getElementById("btnSearchBook").addEventListener("click", (event) =>{
         let bookID = document.getElementById("bookID").value;
         if(bookID.length === 0) {

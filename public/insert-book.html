@@ -102,6 +102,8 @@
     <br>
 </div>
 <script>
+    //Watches the title input text box
+    //Indicates it is alright by showing green border if there is at least something there, red if not
     document.getElementById("title").addEventListener("input", (event) => {
         if(document.getElementById("title").value.length > 0) {
             document.getElementById("title").style.borderColor = "green";
@@ -110,6 +112,9 @@
             document.getElementById("title").style.borderColor = "red";
         }
     });
+
+    //Watches the year entry - indicates if bad value
+    //Bad value = not integer, not 1454 - 2021,
     document.getElementById("year").addEventListener("input", (event) => {
         if(document.getElementById("year").value < 1454 || document.getElementById("year").value % 1 !== 0.0
             || document.getElementById("year").value.toString().indexOf(".") >= 0 || document.getElementById("year").value > 2021) {
@@ -119,6 +124,9 @@
             document.getElementById("year").style.borderColor = "green";
         }
     });
+
+    //Watches the price value to notify if a bad value
+    //Bad value = has an e, less than 0, or more than 2 decimal points
     document.getElementById("price").addEventListener("input", (event) => {
         let testPrice = document.getElementById("price").value;
         let stringTestPrice = testPrice.toString();
@@ -133,6 +141,11 @@
         }
 
     });
+
+    /*
+    * Create Author List
+    * Makes an unordered list of check boxes for each possible author in the database
+     */
     function CreateAuthorList(data){
         let list = "";
         let i = 0;
@@ -143,6 +156,8 @@
         }
         return list;
     }
+
+    //When the page is loaded grabs all the authors so that they are displayed for user to add them to the book
     window.addEventListener("load", (event) =>{
         let url = "https://thawing-sea-51557.herokuapp.com/api/authors/";
         let xhttp = new XMLHttpRequest();
@@ -156,6 +171,13 @@
         xhttp.send();
     });
 
+    /*
+    *Form Validation
+    * Goes through all possible issues with values you entered - returns true if none tripped
+    * If true = all fields alright therefore request can happen
+    * If false = something wrong so will display error message
+    * Bad values = need title, need author, year/price described above
+     */
     function FormValidation() {
         let allAuthors = document.getElementsByName("author");
         let length = allAuthors.length;
@@ -191,6 +213,8 @@
 
         return true;
     }
+
+    //Adds the book that you entered by getting all your data and then sending the POST request
     document.getElementById("btnAddBook").addEventListener("click", (event) => {
         if(FormValidation()) {
             document.getElementById("issueMessage").innerHTML = "";

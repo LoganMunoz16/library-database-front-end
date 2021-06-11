@@ -118,6 +118,7 @@
     </div>
 </div>
 <script>
+    //Watches the title field to ensure there is an entry
     document.getElementById("title").addEventListener("input", (event) => {
         if(document.getElementById("title").value.length > 0) {
             document.getElementById("title").style.borderColor = "green";
@@ -126,6 +127,8 @@
             document.getElementById("title").style.borderColor = "red";
         }
     });
+
+    //Watches the year field to ensure a valid value - no decimals, 1454 - 2021
     document.getElementById("year").addEventListener("input", (event) => {
         if(document.getElementById("year").value < 1454 || document.getElementById("year").value % 1 !== 0.0
             || document.getElementById("year").value.toString().indexOf(".") >= 0 || document.getElementById("year").value > 2021) {
@@ -135,6 +138,8 @@
             document.getElementById("year").style.borderColor = "green";
         }
     });
+
+    //Watches the price field to ensure valid value - up to decimals, positive
     document.getElementById("price").addEventListener("input", (event) => {
         let testPrice = document.getElementById("price").value;
         let stringTestPrice = testPrice.toString();
@@ -149,6 +154,11 @@
         }
 
     });
+
+    /*
+    * Create Author List
+    * Like in insert-book, makes an unordered list of checkboxes for all the authors
+     */
     function CreateAuthorList(data){
         let list = "";
         let i = 0;
@@ -159,6 +169,11 @@
         }
         return list;
     }
+
+    /*
+    * Insert Values
+    * Grabs all the values from the book and puts them into the right fields so you can see
+     */
     function InsertValues(data) {
         document.getElementById("title").value = data["title"];
         document.getElementById("description").value = data["description"];
@@ -172,12 +187,18 @@
             document.getElementById("hardCoverY").checked = false;
             document.getElementById("hardCoverN").checked = true;
         }
+
+        //My check boxes all have id's that are the id's of the authors they represent
+        //So this loop looks for the id of the author attached to the book, and checks that checkbox - pretty neat!
         for(let i = 0; i < data["author"].length; i++){
             let queryString = "input[value=\'" + data["author"][i] + "\']";
             document.querySelector(queryString).checked = true;
         }
 
     }
+
+    //You don't see it initially, but on loading the page the authors are loaded in the form below
+    //Upon searching for you book this becomes visible
     window.addEventListener("load", (event) =>{
         let url = "https://thawing-sea-51557.herokuapp.com/api/authors/";
         let xhttp = new XMLHttpRequest();
@@ -190,6 +211,9 @@
         xhttp.open('GET', url, true);
         xhttp.send();
     });
+
+    //Searches for the book with that id - validating the id too
+    //Also makes the form below it visible and calls the function to add the previous values into it
     document.getElementById("btnSearchBook").addEventListener("click", (event) =>{
         let bookID = document.getElementById("bookID").value;
         if(bookID.length === 0) {
@@ -212,6 +236,12 @@
         xhttp.send();
     });
 
+    /*
+    * Form Validation
+    * Goes through all values and ensures they are valid - if any are not returns false and displays error message
+    * If all ok, returns true which lets the request get called
+    * The specifications for valid values are the same as insert-book
+     */
     function FormValidation() {
         let allAuthors = document.getElementsByName("author");
         let length = allAuthors.length;
@@ -247,6 +277,9 @@
 
         return true;
     }
+
+    //Calls the FormValidation to ensure we can PATCH alright
+    //If all good sends the PATCH request
     document.getElementById("btnUpdateBook").addEventListener("click", (event) => {
         if(FormValidation()){
             document.getElementById("issueMessage").innerHTML = "";

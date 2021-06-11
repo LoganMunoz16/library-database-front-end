@@ -79,6 +79,8 @@
     <br>
 </div>
 <script>
+    //Listener watches the inputs to the "name" field - shows a red border if a bad value and green if good
+    //For this instance name can be anything, so only bad if there is nothing entered
     document.getElementById("name").addEventListener("input", (event) => {
         if(document.getElementById("name").value.length > 0) {
             document.getElementById("name").style.borderColor = "green";
@@ -87,6 +89,10 @@
             document.getElementById("name").style.borderColor = "red";
         }
     });
+
+    //Button to add the author
+    //If no name value gives an error and doesn't let you - name is required
+    //Otherwise just POSTs the value to the author collection
     document.getElementById("btnAddAuthor").addEventListener("click", (event) => {
         if(document.getElementById("name").value.length === 0) {
             document.getElementById("issueMessage").innerHTML = "Please fill all required forms.";
