@@ -9,7 +9,7 @@ The back end of this code is kept private for security concerns, but the followi
 
 https://limitless-shelf-87547.herokuapp.com/
 
-Here are a couple pictures of what the website looks like:
+Here are a few pictures of what the website looks like:
 
 ## Home Page
 
