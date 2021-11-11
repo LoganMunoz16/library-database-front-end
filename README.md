@@ -11,7 +11,7 @@ https://limitless-shelf-87547.herokuapp.com/
 
 Here are a couple pictures of what the website looks like:
 
-##Home Page
+## Home Page
 
 ![image](https://user-images.githubusercontent.com/59589283/141358154-0b0fb59c-e0be-4bb1-87d4-2392db2ef3fb.png)
 
@@ -19,6 +19,6 @@ Here are a couple pictures of what the website looks like:
 
 ![image](https://user-images.githubusercontent.com/59589283/141358313-f4656be5-7c8e-48cf-a85a-4854fa141420.png)
 
-##Authors
+## Authors
 
 ![image](https://user-images.githubusercontent.com/59589283/141358376-f478b21f-0fd1-4ad2-b63c-3eb2435ce2d7.png)
