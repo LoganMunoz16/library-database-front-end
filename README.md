@@ -1,5 +1,5 @@
 # Library Database Front End
-This was the final project in my Netcentric Computing course.
+This was the final project in my Netcentric Computing course, CSC 3221.
 
 We were tasked with using HTML, potentially CSS, and JavaScript to create a mock library API on a node.js runtime environment. The API uses Mongoose to interact with a MongoDB database, and supports various functions such as adding books or authors, searching for a book or an author - whether by title or id, and modifying a book or an author.
 
