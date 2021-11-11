@@ -15,7 +15,7 @@ Here are a couple pictures of what the website looks like:
 
 ![image](https://user-images.githubusercontent.com/59589283/141358154-0b0fb59c-e0be-4bb1-87d4-2392db2ef3fb.png)
 
-##Books
+## Books
 
 ![image](https://user-images.githubusercontent.com/59589283/141358313-f4656be5-7c8e-48cf-a85a-4854fa141420.png)
 
