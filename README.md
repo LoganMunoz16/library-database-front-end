@@ -7,10 +7,6 @@ This was the largest scale web API that I had built, and it taught me a great de
 
 *Note: The back end repository of this web application is kept private for security concerns regarding the connection to the MongoDB database. However, in the folder entitled "back-end", I have included the code for each of the routers used when creating the back end.*
 
-The following link will take you to the website where you can view and test all the different functionalities. A quick note, the database takes a second to load after being inactive for a period of time, but it will eventually wake up and the results will display.
-
-https://limitless-shelf-87547.herokuapp.com/
-
 Here are a few pictures of what the website looks like:
 
 ## Home Page
